@@ -13,7 +13,7 @@ class Ciudades:
         self.archivoEntrada = archivoEntrada
         self.localizacionesBD = localizacionesBD
 
-    def __str__(self):
+    def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO ciudades(id_ciudad, nombre_ciudad, artista, usuario, id_pais) VALUES' + '\n'
         cuerpo = ''''''

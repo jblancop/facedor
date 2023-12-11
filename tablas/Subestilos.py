@@ -12,7 +12,7 @@ class Subestilos:
         self.archivoEntrada = archivoEntrada
         self.subestilosBD = subestilosBD
 
-    def __str__(self):
+    def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO subestilos(id_subestilo, nombre_subestilo) VALUES' + '\n'
         cuerpo = ''''''

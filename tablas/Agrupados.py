@@ -12,7 +12,7 @@ class Agrupados:
         self.numeroSubestilos = numeroSubestilos
         self.estilos = estilos
 
-    def __str__(self):
+    def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO agrupados(id_estilo, id_subestilo) VALUES' + '\n'
         cuerpo = ''''''
@@ -40,7 +40,6 @@ class Agrupados:
                         formato = f'({idEstilo}, {idSubestilo}),'
 
                         linea = Utilidades.formateador(formato, contadorExterno)
-
                         contadorExterno -= 1 #En cada iteración se reduce en uno el contador externo para cambiar "," por ";" cuando se llegue a la última línea
                         contadorInterno += 1 #Dado que se ha encontrado una equivalencia, el contador interno aumenta en 1
 

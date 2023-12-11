@@ -9,7 +9,7 @@ class Listas:
         self.ano = ano
         self.enlaceSpotify = enlaceSpotify
 
-    def __str__(self):
+    def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO listas_spotify(id_lista_spotify, ano, enlace_spotify) VALUES' + '\n'
         cuerpo = f'(NULL, {self.ano}, "{self.enlaceSpotify}");'

@@ -1,6 +1,6 @@
 '''
 Facedor 2.0 (versión 1.0 desarrollada en PHP), aplicación de consola interactiva para poblar la base de datos MySQL de 50 Años de Era Pop.
-Ejecutar en Pycharm o en el CMD de Windows y seguir las instrucciones que aparezcan en pantalla.
+Ejecutar en Pycharm, VS Code o en el CMD de Windows y seguir las instrucciones que aparezcan en pantalla.
 '''
 
 from infraestructura.GestorInserciones import GestorInserciones as GI #Clases infraestructura
@@ -11,7 +11,7 @@ from tablas.Listas import Listas #Clases que representan cada una de las tablas 
 from tablas.Canciones import Canciones
 from tablas.Paises import Paises
 from tablas.Ciudades import Ciudades
-from tablas.Autores import Autores
+from tablas.Artistas import Artistas
 from tablas.Discos import Discos
 from tablas.Publican import Publican
 from tablas.Subestilos import Subestilos
@@ -44,7 +44,6 @@ else: #Si se retoma desde la última tabla poblada
 
 archivoEntrada = f'entradas/{ano}.txt' #Archivos no temporales de entrada y salida
 archivoVotos = f'entradas/votos_{ano}.txt'
-archivoPistas = f'entradas/pistas_{ano}.txt'
 archivoSalida = f'salidas/inserciones_{ano}.txt'
 
 try:
@@ -59,12 +58,8 @@ try:
             enlaceSpotify = input(f'Introduce el enlace de Spotify correspondiente a {ano}: ')
 
             lista = Listas(ano, enlaceSpotify) #Se crea el objeto lista
-
-            print(GI.escribirSentencia(lista)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
+            
+            sql = lista.crearSentencia()
 
         elif fase == 'listas_spotify': #Poblado de la tabla "canciones"
 
@@ -72,13 +67,9 @@ try:
 
             idLista = Modelo.listarId('id_lista_spotify', 'listas_spotify', 'ano', ano)
 
-            canciones = Canciones(archivoEntrada, archivoVotos, archivoPistas, idLista) #Se crea el objeto canciones
+            canciones = Canciones(archivoEntrada, archivoVotos, idLista) #Se crea el objeto canciones
 
-            print(GI.escribirSentencia(canciones)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
+            sql = canciones.crearSentencia()
 
         elif fase == 'canciones': #Poblado de la tabla "paises"
 
@@ -89,11 +80,7 @@ try:
 
             paises = Paises(archivoEntrada, paisesBD, paisesBritanicos) #Se crea el objeto paises
 
-            print(GI.escribirSentencia(paises)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
+            sql = paises.crearSentencia()
 
         elif fase == 'paises': #Poblado de la tabla "ciudades"
 
@@ -103,37 +90,25 @@ try:
 
             ciudades = Ciudades(archivoEntrada, localizacionesBD) #Se crea el objeto ciudades
 
-            print(GI.escribirSentencia(ciudades)) #Devuelve "Se ha escrito la sentencia INSERT..."
+            sql = ciudades.crearSentencia()
 
-            fase = Utilidades.repeticion(archivoSalida)
+        elif fase == 'ciudades': #Poblado de la tabla "artistas"
 
-            escape = input(advertencia)
+            print('\n5) Se va a generar la sentencia INSERT para la tabla "artistas".')
 
-        elif fase == 'ciudades': #Poblado de la tabla "autores"
+            artistasBD = Modelo.listarElementos('nombre_artista', 'artistas') #Todos los artistas presentes en la BD
 
-            print('\n5) Se va a generar la sentencia INSERT para la tabla "autores".')
+            artistas = Artistas(archivoEntrada, artistasBD) #Se crea el objeto artistas
 
-            autoresBD = Modelo.listarElementos('nombre_autor', 'autores') #Todos los autores presentes en la BD
+            sql = artistas.crearSentencia()
 
-            autores = Autores(archivoEntrada, autoresBD) #Se crea el objeto autores
-
-            print(GI.escribirSentencia(autores)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
-
-        elif fase == 'autores': #Poblado de la tabla "discos"
+        elif fase == 'artistas': #Poblado de la tabla "discos"
 
             print('\n6) Se va a generar la sentencia INSERT para la tabla "discos".')
 
             discos = Discos(archivoEntrada) #Se crea el objeto discos
 
-            print(GI.escribirSentencia(discos)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
+            sql = discos.crearSentencia()
 
         elif fase == 'discos': #Poblado de la tabla "publican"
 
@@ -141,11 +116,7 @@ try:
 
             publican = Publican(archivoEntrada) #Se crea el objeto publican
 
-            print(GI.escribirSentencia(publican)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
+            sql = publican.crearSentencia()
 
         elif fase == 'publican': #Poblado de la tabla "subestilos"
 
@@ -155,11 +126,7 @@ try:
 
             subestilos = Subestilos(archivoEntrada, subestilosBD) #Se crea el objeto subestilos
 
-            print(GI.escribirSentencia(subestilos)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
+            sql = subestilos.crearSentencia()
 
         elif fase == 'subestilos': #Poblado de la tabla "relacionados"
 
@@ -167,11 +134,7 @@ try:
 
             relacionados = Relacionados(archivoEntrada) #Se crea el objeto relacionados
 
-            print(GI.escribirSentencia(relacionados)) #Devuelve "Se ha escrito la sentencia INSERT..."
-
-            fase = Utilidades.repeticion(archivoSalida)
-
-            escape = input(advertencia)
+            sql = relacionados.crearSentencia()
 
         elif fase == 'relacionados': #Poblado de la tabla "agrupados"
 
@@ -182,15 +145,14 @@ try:
 
             agrupados = Agrupados(numeroSubestilos, estilos) #Se crea el objeto agrupados
 
-            print(GI.escribirSentencia(agrupados)) #Devuelve "Se ha escrito la sentencia INSERT..."
+            sql = agrupados.crearSentencia()
 
-            fase = Utilidades.repeticion(archivoSalida)
+        fase = Utilidades.resolucionProceso(archivoSalida, sql)
+        
+        if fase == 'agrupados': escape = '0'
+        else: escape = input(advertencia)
 
-            escape = '0'
-
-    else:
-
-        if fase == 'agrupados': print(f'\nHemos terminado con {ano}, así que... ¡Hasta el próximo recopilatorio!')
-        else: print(f'\nLa última tabla poblada ha sido "{fase}".')
+    if fase == 'agrupados': print(f'\nHemos terminado con {ano}, así que... ¡Hasta el próximo recopilatorio!')
+    else: print(f'\nLa última tabla poblada ha sido "{fase}".')
 
 except Exception as error: print(f'Ha ocurrido un error: (1) {type(error)} (2) {error}')

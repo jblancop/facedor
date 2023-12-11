@@ -6,7 +6,10 @@ import mysql.connector as mysql #Conector específico para MySQL
 
 class GestorConexiones:
 
-    INSTANCIA = {'host': 'localhost', 'user': 'root', 'password': '', 'database': 'recopilatorios_pruebas'} #Parámetros de conexión
+    INSTANCIA = {'host': 'localhost', 
+                 'user': 'root', 
+                 'password': '', 
+                 'database': 'recopilatorios_pruebas'} #Parámetros de conexión
 
     @classmethod #Método que se invoca al comenzar la declaración "with"
     def __enter__(cls):

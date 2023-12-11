@@ -8,9 +8,11 @@ from infraestructura.Modelo import Modelo
 
 class Discos:
 
-    def __init__(self, archivoEntrada): self.archivoEntrada = archivoEntrada
+    def __init__(self, archivoEntrada): 
+        
+        self.archivoEntrada = archivoEntrada
 
-    def __str__(self):
+    def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO discos(id_disco, titulo_disco, tipo, id_cancion) VALUES' + '\n'
         cuerpo = ''''''
@@ -20,21 +22,19 @@ class Discos:
             arreglo = archivo.read().splitlines() #Carga el archivo línea a línea
 
             trio = {} #Diccionario que almacena los tres campos correspondientes a cada disco
-            datos = [] #Lista que almacena los diccionarios
+            datos = [] #Lista que almacena los diccionarios (es decir, los discos)
 
             for linea in arreglo:
 
                 if linea.find(').') != -1:
 
-                    cancion = Utilidades.cancion(False, linea)
+                    cancion = Utilidades.cancion(linea)
 
                     trio['titulo_disco'] = Utilidades.disco(linea)
                     trio['tipo'] = Utilidades.tipo(linea)
                     trio['id_cancion'] = Modelo.listarId('id_cancion', 'canciones', 'titulo_cancion', f'"{cancion}"')
 
-                    datos.append(trio)
-
-                    trio = {} #Es necesario borrar "trio" tras cada iteración porque "datos" no guarda sus valores sino una referencia al objeto
+                    datos.append(trio.copy())
 
             contador = len(datos) #Número de elementos; en este caso, siempre van a ser 15
 

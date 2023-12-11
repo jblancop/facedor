@@ -52,6 +52,56 @@ class Modelo:
 
         except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
 
+    @staticmethod #Determina el id de la ciudad de la que es originario cada autor
+    def listarIdCiudad(ciudad, pais):
+
+        try:
+
+            with GC() as cursor:
+
+                sql = f'''
+                        SELECT 
+                            id_ciudad 
+                        FROM 
+                            ciudades
+                                NATURAL JOIN paises  
+                        WHERE
+                            nombre_ciudad = "{ciudad}"
+                            AND nombre_pais = "{pais}"
+                        '''
+
+                cursor.execute(sql)
+
+                resultado = cursor.fetchone() #Este método devuelve una tupla de un solo elemento
+
+                return resultado[0]
+
+        except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
+
+    @staticmethod #Determina el id del estilo en función de su nombre (o parte del nombre, de ahí el LIKE)
+    def listarIdEstilo(estilo):
+
+        try:
+
+            with GC() as cursor:
+
+                sql = f'''
+                        SELECT 
+                            id_estilo 
+                        FROM 
+                            estilos
+                        WHERE
+                            nombre_estilo LIKE "%{estilo}%"
+                        '''
+
+                cursor.execute(sql)
+
+                resultado = cursor.fetchone() #Este método devuelve una tupla de un solo elemento
+
+                return resultado[0]
+
+        except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
+    
     @staticmethod #Devuelve un conjunto de elementos del mismo tipo
     def listarElementos(parametro, tabla):
 
@@ -102,32 +152,6 @@ class Modelo:
 
         except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
 
-    @staticmethod #Determina el id de la ciudad de la que es originario cada autor
-    def listarIdCiudad(ciudad, pais):
-
-        try:
-
-            with GC() as cursor:
-
-                sql = f'''
-                        SELECT 
-                            id_ciudad 
-                        FROM 
-                            ciudades
-                                NATURAL JOIN paises  
-                        WHERE
-                            nombre_ciudad = "{ciudad}"
-                            AND nombre_pais = "{pais}"
-                        '''
-
-                cursor.execute(sql)
-
-                resultado = cursor.fetchone() #Este método devuelve una tupla de un solo elemento
-
-                return resultado[0]
-
-        except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
-
     @staticmethod #Determina qué subestilos se añadieron por última vez a la BD
     def listarUltimosSubestilos(numSubestilos):
 
@@ -151,29 +175,5 @@ class Modelo:
                 resultado = cursor.fetchall() #Este método devuelve una lista de tuplas de dos elementos
 
                 return resultado
-
-        except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
-
-    @staticmethod #Determina el id del estilo en función de su nombre (o parte del nombre, de ahí el LIKE)
-    def listarIdEstilo(estilo):
-
-        try:
-
-            with GC() as cursor:
-
-                sql = f'''
-                        SELECT 
-                            id_estilo 
-                        FROM 
-                            estilos
-                        WHERE
-                            nombre_estilo LIKE "%{estilo}%"
-                        '''
-
-                cursor.execute(sql)
-
-                resultado = cursor.fetchone() #Este método devuelve una tupla de un solo elemento
-
-                return resultado[0]
 
         except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')

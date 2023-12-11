@@ -8,9 +8,11 @@ from infraestructura.Modelo import Modelo
 
 class Relacionados:
 
-    def __init__(self, archivoEntrada): self.archivoEntrada = archivoEntrada
+    def __init__(self, archivoEntrada): 
+        
+        self.archivoEntrada = archivoEntrada
 
-    def __str__(self):
+    def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO relacionados(id_disco, id_subestilo) VALUES' + '\n'
         cuerpo = ''''''
@@ -46,9 +48,7 @@ class Relacionados:
 
                     duo['id_subestilos'] = conjunto
 
-                    datos.append(duo)
-
-                    duo = {} #Es necesario borrar "duo" tras cada iteración porque "datos" no guarda sus valores sino una referencia al objeto
+                    datos.append(duo.copy())
 
         for duo in datos:
 

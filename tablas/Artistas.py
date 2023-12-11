@@ -1,45 +1,42 @@
 '''
-Clase que genera la secuencia INSERT correspondiente a la tabla "autores" de la BD
+Clase que genera la secuencia INSERT correspondiente a la tabla "artistas" de la BD
 '''
 
 from infraestructura.GestorArchivos import GestorArchivos as GA
 from infraestructura.Utilidades import Utilidades
 from infraestructura.Modelo import Modelo
 
-class Autores:
+class Artistas:
 
-    def __init__(self, archivoEntrada, autoresBD):
+    def __init__(self, archivoEntrada, artistasBD):
 
         self.archivoEntrada = archivoEntrada
-        self.autoresBD = autoresBD
+        self.artistasBD = artistasBD
 
-    def __str__(self):
+    def crearSentencia(self):
 
-        ENCABEZADO = 'INSERT INTO autores(id_autor, nombre_autor, ano_debut, ano_retirada, enlace_rym, foto_autor, foto_alternativa, id_ciudad) VALUES' + '\n'
+        ENCABEZADO = 'INSERT INTO artistas(id_artista, nombre_artista, ano_debut, ano_retirada, enlace_rym, foto_artista, foto_alternativa, id_ciudad) VALUES' + '\n'
         cuerpo = ''''''
 
-        with GA(self.archivoEntrada, 'r') as archivo: #Extracción de los países presentes en el recopilatorio
+        with GA(self.archivoEntrada, 'r') as archivo: #Extracción de los artistas presentes en el recopilatorio
 
             arreglo = archivo.read().splitlines() #Carga el archivo línea a línea
 
-            sexteto = {'foto_autor': -1} #Diccionario que almacena los seis campos correspondientes a cada autor (por defecto se incluye "foto_autor" con un -1 porque algunos archivos de entrada no incluyen este tipo de información)
+            sexteto = {} #Diccionario que almacena los seis campos correspondientes a cada artista
             datos = [] #Lista que almacena los diccionarios
 
             for linea in arreglo:
 
-                if linea.find('(') != -1: sexteto['nombre_autor'] = Utilidades.autor(linea) #Los parámetros están listados según su orden dentro de la secuencia INSERT, aunque la iteración no ocurre en ese mismo orden
+                if linea.find('(') != -1: sexteto['nombre_artista'] = Utilidades.artista(linea) #Los parámetros están listados según su orden dentro de la secuencia INSERT, aunque la iteración no ocurre en ese mismo orden
                 if linea.find('Debut: ') != -1: sexteto['ano_debut'] = Utilidades.anos(linea)
                 if linea.find('Retirada: ') != -1: sexteto['ano_retirada'] = Utilidades.anos(linea)
                 if linea.find('rateyourmusic') != -1: sexteto['enlace_rym'] = Utilidades.enlace(linea)
+                
                 if linea.find('Fotografía: ') != -1: #En cada iteración, la fotografía va a ser lo último que localice
 
-                    sexteto['foto_autor'] = Utilidades.enlace(linea)
+                    sexteto['foto_artista'] = Utilidades.enlace(linea)
 
-                    if sexteto['nombre_autor'] not in self.autoresBD: #Por eso la carga del diccionario en la lista ocurre en este punto
-
-                        datos.append(sexteto)
-
-                        sexteto = {'foto_autor': -1} #Es necesario reiniciar "sexteto" tras cada iteración porque "datos" no guarda sus valores sino una referencia al objeto
+                    if sexteto['nombre_artista'] not in self.artistasBD: datos.append(sexteto.copy()) #Por eso la carga del diccionario en la lista ocurre en este punto
 
                 if linea.find(').') != -1:
 
@@ -52,16 +49,16 @@ class Autores:
 
         contador = len(datos) #Número de elementos
 
-        if contador == 0: cuerpo = 'No hay autores nuevos que incorporar a la base de datos.'
+        if contador == 0: cuerpo = 'No hay artistas nuevos que incorporar a la base de datos.'
         else:
 
             for sexteto in datos:
 
-                parametro1 = sexteto['nombre_autor']
+                parametro1 = sexteto['nombre_artista']
                 parametro2 = sexteto['ano_debut']
                 parametro3 = sexteto['ano_retirada']
                 parametro4 = sexteto['enlace_rym']
-                parametro5 = sexteto['foto_autor']
+                parametro5 = sexteto['foto_artista']
                 parametro6 = sexteto['id_ciudad']
 
                 formato = f'(NULL, "{parametro1}", {parametro2}, {parametro3}, "{parametro4}", "{parametro5}", NULL, {parametro6}),'

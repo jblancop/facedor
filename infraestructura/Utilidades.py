@@ -6,8 +6,10 @@ from infraestructura.GestorInserciones import GestorInserciones as GI
 
 class Utilidades:
 
-    @staticmethod #Parte final, que siempre se repite, de cada etapa condicional de principal.py -equivalente a un require() en PHP-
-    def repeticion(archivoSalida):
+    @staticmethod #Parte final del proceso de principal.py
+    def resolucionProceso(archivoSalida, sql):
+
+        print(GI.escribirSentencia(sql)) #Devuelve "Se ha escrito la sentencia INSERT..."
 
         input('Si todo está en orden, presiona "Intro" para insertar la sentencia consolidada en la base de datos.')
 
@@ -51,23 +53,14 @@ class Utilidades:
 
         return formato
 
-    @staticmethod #Extrae el título de las canciones; pistas es un buleano con valor True si la extracción se hace a partir del archivo "pistas_xxxx"
-    def cancion(pistas, linea):
+    @staticmethod #Extrae el título de las canciones
+    def cancion(linea):
 
-        if pistas == True:
+        trozos = linea.split('"') #Parte la cadena en función de las comillas dobles que encuentre
 
-            inicio = linea.find(' - ') + 3 #El título siempre está 3 posiciones después del guión
-            cancion = linea[inicio:].strip() #Se le aplica un limpiado de espacios en blanco
+        cancion = trozos[1] #El título de la canción estará en la posición 1 de la lista resultante
 
-            return cancion
-
-        else:
-
-            trozos = linea.split('"') #Parte la cadena en función de las comillas dobles que encuentre
-
-            cancion = trozos[1] #El título de la canción estará en la posición 1 de la lista resultante
-
-            return cancion
+        return cancion
 
     @staticmethod #Extrae enlaces https
     def enlace(linea):
@@ -96,13 +89,6 @@ class Utilidades:
 
         else: return votos #Si no la localiza, utiliza el último valor encontrado; de ahí que necesite incorporarlo como parámetro del método
 
-    @staticmethod #Extrae la pista que corresponde a cada canción en el recopilatorio
-    def pista(linea):
-
-        pista = linea[0:2]
-
-        return pista
-
     @staticmethod #Extrae la localización del artista
     def localizacion(linea):
 
@@ -117,21 +103,21 @@ class Utilidades:
 
         return localizacionTupla
 
-    @staticmethod #Extrae el nombre del autor
-    def autor(linea):
+    @staticmethod #Extrae el nombre del artista
+    def artista(linea):
 
         particion = linea.split('", de ') #Parte la línea en dos para procesar sólo el segundo elemento y evitar confusiones con los paréntesis
 
         inicio = 0
         final = particion[1].find(' (')
 
-        autor = particion[1][inicio:final].strip()
+        artista = particion[1][inicio:final].strip()
 
-        if autor != 'The The': #Si el autor no es 'The The'
+        if artista != 'The The': #Si el artista no es 'The The'
 
-            if autor.find('The') == 0: autor = autor[4:] + ', The' #Si el nombre empieza por 'The', recorta el artículo y le añade ', The' al final
+            if artista.find('The') == 0: artista = artista[4:] + ', The' #Si el nombre empieza por 'The', recorta el artículo y le añade ', The' al final
 
-        return autor
+        return artista
 
     @staticmethod #Extrae tanto el año de debut como el de retirada -si procede-
     def anos(linea):

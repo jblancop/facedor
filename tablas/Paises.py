@@ -13,7 +13,7 @@ class Paises:
         self.paisesBD = paisesBD
         self.paisesBritanicos = paisesBritanicos
 
-    def __str__(self):
+    def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO paises(id_pais, nombre_pais, reino_unido) VALUES' + '\n'
         cuerpo = ''''''
