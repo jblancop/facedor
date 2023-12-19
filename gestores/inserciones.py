@@ -4,8 +4,7 @@ Clase para la gestión de la escritura de las sentencias INSERT en los archivos 
 
 import os #Librería para la eliminación de archivos
 
-from infraestructura.GestorArchivos import GestorArchivos as GA
-from infraestructura.GestorConexiones import GestorConexiones as GC
+from gestores import GestorArchivos as GA, GestorConexiones as GC
 
 class GestorInserciones:
 
@@ -30,13 +29,13 @@ class GestorInserciones:
             return fase
 
     @classmethod #Escritura de la sentencia INSERT en "ARCHIVO_SENTENCIA"
-    def escribirSentencia(cls, tabla):
+    def escribirSentencia(cls, sql):
 
-        with GA(cls.ARCHIVO_SENTENCIA, 'w') as archivo: archivo.write(str(tabla)) #"tabla" es una instancia de una clase tal que Canciones, Publican, etc.
+        with GA(cls.ARCHIVO_SENTENCIA, 'w') as archivo: archivo.write(sql)
 
         return f'Se ha escrito la sentencia INSERT en la ruta "{cls.ARCHIVO_SENTENCIA}". Comprueba que es correcta y, en caso de corregirla, no te olvides de guardar los cambios presionando Ctrl + S.'
 
-    @classmethod #Escritura de la sentencia INSERT consolidada en la base de datos
+    @classmethod #Escritura de la sentencia INSERT consolidada en la BD
     def insertarSentencia(cls):
 
         with GA(cls.ARCHIVO_SENTENCIA, 'r') as archivo:
@@ -59,13 +58,17 @@ class GestorInserciones:
                 except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
 
     @classmethod #Traslada la sentencia INSERT consolidada de "ARCHIVO_SENTENCIA" al archivo de salida y a "ARCHIVO_FASE"
-    def copiarArchivos(cls, archivoSalida):
+    def copiarArchivos(cls, archivoSalida, fase):
 
         with GA(cls.ARCHIVO_SENTENCIA, 'r') as archivo: copia = archivo.read()
         with GA(cls.ARCHIVO_FASE, 'w') as archivo: archivo.write(copia)
-        with GA(archivoSalida, 'a') as archivo: archivo.write(copia + '\n\n')
+        
+        with GA(archivoSalida, 'a') as archivo: 
+            
+            if fase == 'relacionados': archivo.write(copia)
+            else: archivo.write(copia + '\n\n')
 
-    @classmethod #Escritura del número de subestilos en "ARCHIVO_SUBESTILOS"
+    @classmethod #Escritura del número de subestilos nuevos que se han encontrado en el recopilatorio actual en "ARCHIVO_SUBESTILOS"
     def escribirSubestilos(cls, subestilos):
 
         with GA(cls.ARCHIVO_SUBESTILOS, 'w') as archivo: archivo.write(str(subestilos))

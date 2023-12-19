@@ -1,2 +1,4 @@
 /entradas/
 /salidas/
+__pycache__/
+*.pyc

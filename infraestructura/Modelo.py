@@ -2,7 +2,7 @@
 Clase con métodos estáticos que interaccionan con la base de datos
 '''
 
-from infraestructura.GestorConexiones import GestorConexiones as GC
+from gestores import GestorConexiones as GC
 
 class Modelo:
 
@@ -52,7 +52,7 @@ class Modelo:
 
         except Exception as error: print(f'Ha ocurrido un error relacionado con la base de datos: (1) {type(error)} (2) {error}')
 
-    @staticmethod #Determina el id de la ciudad de la que es originario cada autor
+    @staticmethod #Determina el id de la ciudad de la que es originario cada artista
     def listarIdCiudad(ciudad, pais):
 
         try:

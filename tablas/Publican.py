@@ -2,54 +2,57 @@
 Clase que genera la secuencia INSERT correspondiente a la tabla "publican" de la BD
 '''
 
-from infraestructura.GestorArchivos import GestorArchivos as GA
-from infraestructura.Utilidades import Utilidades
-from infraestructura.Modelo import Modelo
+from auxiliares import Extraer, Utilidades
+from infraestructura import Modelo, Tabla
 
-class Publican:
+class Publican(Tabla):
 
-    def __init__(self, archivoEntrada): 
+    def __init__(self, archivoPrincipal): 
         
-        self.archivoEntrada = archivoEntrada
+        super().__init__(archivoPrincipal)
+
+    def cargarDatos(self):
+
+        campos = {} #Diccionario que almacena los dos ids
+        datos = [] #Lista que almacena los diccionarios
+                
+        arreglo = Utilidades.convertirArchivo(self.archivoPrincipal) #Extracción de los artistas y discos presentes en el recopilatorio
+
+        for linea in arreglo:
+
+            if linea.find(').') != -1:
+
+                artista = Extraer.artista(linea)
+                disco = Extraer.disco(linea)
+
+                campos['id_artista'] = Modelo.listarId('id_artista', 'artistas', 'nombre_artista', f'"{artista}"')
+                campos['id_disco'] = Modelo.listarId('id_disco', 'discos', 'titulo_disco', f'"{disco}"')
+
+                datos.append(campos.copy())
+
+        return datos
+    
+    def definirFormato(self, campos):
+        
+        c1 = campos['id_artista']
+        c2 = campos['id_disco']
+
+        formato = f'({c1}, {c2}),'
+
+        return formato
 
     def crearSentencia(self):
 
         ENCABEZADO = 'INSERT INTO publican(id_artista, id_disco) VALUES' + '\n'
-        cuerpo = ''''''
+        cuerpo = ''
+        datos = self.cargarDatos()
+        contador = len(datos) #Número de elementos; en este caso, siempre van a ser 15
 
-        with GA(self.archivoEntrada, 'r') as archivo: #Extracción de los artistas y discos presentes en el recopilatorio
+        for campos in datos:
 
-            arreglo = archivo.read().splitlines() #Carga el archivo línea a línea
+            cuerpo += Utilidades.formateador(self.definirFormato(campos), contador)
+            contador -= 1 #En cada iteración se reduce en uno el contador para cambiar "," por ";" cuando se llegue a la última sentencia
 
-            duo = {} #Diccionario que almacena los dos ids
-            datos = [] #Lista que almacena los diccionarios
+        sentencia = ENCABEZADO + cuerpo
 
-            for linea in arreglo:
-
-                if linea.find(').') != -1:
-
-                    artista = Utilidades.artista(linea)
-                    disco = Utilidades.disco(linea)
-
-                    duo['id_artista'] = Modelo.listarId('id_artista', 'artistas', 'nombre_artista', f'"{artista}"')
-                    duo['id_disco'] = Modelo.listarId('id_disco', 'discos', 'titulo_disco', f'"{disco}"')
-
-                    datos.append(duo.copy())
-
-            contador = len(datos) #Número de elementos; en este caso, siempre van a ser 15
-
-            for duo in datos:
-
-                parametro1 = duo['id_artista']
-                parametro2 = duo['id_disco']
-
-                formato = f'({parametro1}, {parametro2}),'
-
-                linea = Utilidades.formateador(formato, contador)
-                contador -= 1 #En cada iteración se reduce en uno el contador para cambiar "," por ";" cuando se llegue a la última sentencia
-
-                cuerpo += linea
-
-            sentencia = ENCABEZADO + cuerpo
-
-            return sentencia
+        return sentencia
