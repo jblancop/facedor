@@ -1,4 +1,9 @@
+#Ignorar directorios con datos de entrada y salida
+
 /entradas/
 /salidas/
+
+#Ignorar directorio __pycache__ en cualquier nivel
+
 __pycache__/
 *.pyc

@@ -31,9 +31,11 @@ class GestorInserciones:
     @classmethod #Escritura de la sentencia INSERT en "ARCHIVO_SENTENCIA"
     def escribirSentencia(cls, sql):
 
-        with GA(cls.ARCHIVO_SENTENCIA, 'w') as archivo: archivo.write(sql)
+        with GA(cls.ARCHIVO_SENTENCIA, 'w') as archivo: 
+            
+            archivo.write(sql)
 
-        return f'Se ha escrito la sentencia INSERT en la ruta "{cls.ARCHIVO_SENTENCIA}". Comprueba que es correcta y, en caso de corregirla, no te olvides de guardar los cambios presionando Ctrl + S.'
+            return f'Se ha escrito la sentencia INSERT en la ruta "{cls.ARCHIVO_SENTENCIA}". Comprueba que es correcta y, en caso de corregirla, no te olvides de guardar los cambios presionando Ctrl + S.'
 
     @classmethod #Escritura de la sentencia INSERT consolidada en la BD
     def insertarSentencia(cls):

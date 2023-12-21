@@ -22,7 +22,7 @@ class Utilidades:
             GI.copiarArchivos(archivoSalida, fase)
 
             try: fase = GI.determinarFase() #Se comprueba cuál ha sido la última tabla poblada
-            except Exception as error: fase = None #Si el archivo temporal ni siquiera existe (es decir, se va a comenzar desde cero) se establece "fase" a None
+            except: fase = None #Si el archivo temporal ni siquiera existe (es decir, se va a comenzar desde cero) se establece "fase" a None
 
             if fase == 'subestilos': GI.escribirSubestilos(inserciones)
             if fase == 'agrupados': GI.eliminarArchivos()
@@ -32,7 +32,7 @@ class Utilidades:
             print('Es necesario reiniciar esta fase.')
 
             try: fase = GI.determinarFase() #Se comprueba cuál ha sido la última tabla poblada
-            except Exception as error: fase = None #Si el archivo temporal ni siquiera existe (es decir, se va a comenzar desde cero) se establece "fase" a None
+            except: fase = None #Si el archivo temporal ni siquiera existe (es decir, se va a comenzar desde cero) se establece "fase" a None
 
         return fase
 

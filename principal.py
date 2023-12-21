@@ -17,7 +17,7 @@ print('\n' + bienvenida.center(len(bienvenida) + 10, '#') + '\n')
 escape = None #Variable que controla el bucle "while"
 
 try: fase = GI.determinarFase() #Se comprueba cuál ha sido la última tabla poblada ("fase" es la variable que controla la estructura condicional "if/elif")
-except Exception as error: fase = None #Si el archivo temporal ni siquiera existe (es decir, se va a comenzar desde cero) se establece "fase" a None
+except: fase = None #Si el archivo temporal ni siquiera existe (es decir, se va a comenzar desde cero) se establece "fase" a None
 
 if fase == None: #Si se comienza el proceso desde cero
 
@@ -68,6 +68,7 @@ try:
             paisesBritanicos = {'Inglaterra', 'Escocia', 'Gales', 'Irlanda del Norte'}
             
             paises = Paises(archivoPrincipal, paisesBD, paisesBritanicos) #Se crea el objeto paises
+            
             sql = paises.crearSentencia()
 
         elif fase == 'paises': #Poblado de la tabla "ciudades"
@@ -130,7 +131,9 @@ try:
 
             numeroSubestilos = GI.determinarSubestilos()
             estilos = ('Country', 'Electro', 'tronic', 'Folk', 'Metal', 'Pop', 'Punk', 'Rock', 'Blues', 'Jazz', 'Hip Hop')
+            
             agrupados = Agrupados(numeroSubestilos, estilos) #Se crea el objeto agrupados
+            
             sql = agrupados.crearSentencia()
 
         fase = Utilidades.resolucionProceso(archivoSalida, sql, fase)
